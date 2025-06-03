@@ -82,5 +82,50 @@ module MaintenanceTasks
       task_data = TaskDataIndex.new("Maintenance::UpdatePostsTask", run)
       assert_equal :completed, task_data.category
     end
+
+    test ".search returns tasks matching the search query" do
+      tasks = TaskDataIndex.available_tasks
+      search_results = TaskDataIndex.search(tasks, "UpdatePosts")
+
+      expected = [
+        "Maintenance::UpdatePostsInBatchesTask",
+        "Maintenance::UpdatePostsModulePrependedTask",
+        "Maintenance::UpdatePostsTask",
+        "Maintenance::UpdatePostsThrottledTask",
+      ]
+      assert_equal expected, search_results.map(&:name)
+    end
+
+    test ".search returns empty array when no tasks match the query" do
+      tasks = TaskDataIndex.available_tasks
+      search_results = TaskDataIndex.search(tasks, "NonExistentTask")
+      assert_empty search_results
+    end
+
+    test ".search is case insensitive" do
+      tasks = TaskDataIndex.available_tasks
+      search_results = TaskDataIndex.search(tasks, "updateposts")
+
+      expected = [
+        "Maintenance::UpdatePostsInBatchesTask",
+        "Maintenance::UpdatePostsModulePrependedTask",
+        "Maintenance::UpdatePostsTask",
+        "Maintenance::UpdatePostsThrottledTask",
+      ]
+      assert_equal expected, search_results.map(&:name)
+    end
+
+    test ".search matches partial task names" do
+      tasks = TaskDataIndex.available_tasks
+      search_results = TaskDataIndex.search(tasks, "Update")
+
+      expected = [
+        "Maintenance::UpdatePostsInBatchesTask",
+        "Maintenance::UpdatePostsModulePrependedTask",
+        "Maintenance::UpdatePostsTask",
+        "Maintenance::UpdatePostsThrottledTask",
+      ]
+      assert_equal expected, search_results.map(&:name)
+    end
   end
 end

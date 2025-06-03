@@ -12,7 +12,16 @@ module MaintenanceTasks
     # Renders the maintenance_tasks/tasks page, displaying
     # available tasks to users, grouped by category.
     def index
-      @available_tasks = TaskDataIndex.available_tasks.group_by(&:category)
+      @available_tasks = TaskDataIndex.available_tasks
+
+      if params[:search].present?
+        search_term = params[:search].downcase
+        @available_tasks = @available_tasks.select do |task|
+          task.name.downcase.include?(search_term)
+        end
+      end
+
+      @available_tasks = @available_tasks.group_by(&:category)
     end
 
     # Renders the page responsible for providing Task actions to users.
@@ -28,7 +37,7 @@ module MaintenanceTasks
     private
 
     def set_refresh
-      @refresh = true
+      @refresh = false
     end
   end
 end

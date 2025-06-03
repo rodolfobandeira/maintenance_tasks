@@ -1,4 +1,23 @@
 <%= tag.div(data: { refresh: (defined?(@refresh) && @refresh) || "" }) do %>
+  <div class="search-container mb-4">
+    <%= form_tag root_path, method: :get, class: "field has-addons" do %>
+      <div class="control has-icons-left is-expanded">
+        <%= text_field_tag :search, params[:search], class: "input", placeholder: "Search tasks by name..." %>
+        <span class="icon is-left">
+          <i class="fas fa-search"></i>
+        </span>
+      </div>
+      <div class="control">
+        <%= submit_tag "Search", class: "button is-info" %>
+      </div>
+      <% if params[:search].present? %>
+        <div class="control">
+          <%= link_to "Clear", root_path, class: "button" %>
+        </div>
+      <% end %>
+    <% end %>
+  </div>
+
   <% if @available_tasks.empty? %>
     <div class="content is-large">
       <h3 class="title is-3"> The MaintenanceTasks gem has been successfully installed! </h3>

@@ -46,6 +46,18 @@ module MaintenanceTasks
         # multiple active Runs.
         tasks.sort_by! { |task| [task.name, task.status] }
       end
+
+      # Returns a filtered list of Task Data objects that match the search query.
+      #
+      # @param tasks [Array<TaskDataIndex>] the list of tasks to search through.
+      # @param query [String] the search query to match against task names.
+      # @return [Array<TaskDataIndex>] the filtered list of Task Data.
+      def search(tasks, query)
+        return [] if query.blank?
+
+        query = query.downcase
+        tasks.select { |task| task.name.downcase.include?(query) }
+      end
     end
 
     # Initializes a Task Data with a name and optionally a related run.
